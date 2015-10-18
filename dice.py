@@ -29,9 +29,23 @@ class Application (Frame):
         self.request2.grid(row = 1, column = 0)
         self.numberEntered = int(self.numberBox.get())
         self.sizeEntered = []
+        count = 0
+        lineNumber = 1
         for i in range(0, self.numberEntered):
             self.sizeEntered.append(Entry(self))
-            self.sizeEntered[i].grid(row = 1, column = i+1)
+            count += 1
+            if count < 3:
+                if i%2 == 0:
+                    self.sizeEntered[i].grid(row = lineNumber, column = 1)
+                else:
+                    self.sizeEntered[i].grid(row = lineNumber, column = 2)
+            else:
+                lineNumber += 1
+                count = 0
+                if i%2 == 0:
+                    self.sizeEntered[i].grid(row = lineNumber, column = 1)
+                else:
+                    self.sizeEntered[i].grid(row = lineNumber, column = 2)
         self.submit = Button(self, text = "Calculate", command = self.answer)
         self.submit.grid()
     
@@ -40,13 +54,19 @@ class Application (Frame):
         self.answerBox = []
         self.sizeReceived = []
         self.randomDice = []
+        self.invalid = False
         for i in range(0, self.numberEntered):
             self.sizeReceived.append(self.sizeEntered[i].get())
         for j in range(0, self.numberEntered):
-            self.randomDice.append(randomGenerator(int(self.sizeReceived[j])))
-        # Finds the probability
-        self.probability = "4"
-        self.answerBox = Label(self, text = "The probability of a "+ str(self.numberDesired.get()) + " is " + self.probability)        
+            if self.sizeReceived[j] < self.numberDesired:
+                self.invalid = True
+        
+        if not self.invalid:
+            # Finds the probability
+            self.probability = "42" 
+            self.answerBox = Label(self, text = "The probability of a "+ str(self.numberDesired.get()) + " is " + self.probability) 
+        else:
+            self.answerBox = Label(self, text = "The size entry is invalid")
         self.answerBox.grid(row = 5, column = 1)
         
 # This can be used later on to get a random number within a set...
