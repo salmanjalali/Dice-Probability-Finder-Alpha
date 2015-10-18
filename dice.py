@@ -28,24 +28,13 @@ class Application (Frame):
         self.request2 = Label(self, text = "Please enter the size of each Die: ")
         self.request2.grid(row = 1, column = 0)
         self.numberEntered = int(self.numberBox.get())
-        self.sizeEntered = []
-        count = 0
-        lineNumber = 1
-        for i in range(0, self.numberEntered):
-            self.sizeEntered.append(Entry(self))
-            count += 1
-            if count < 3:
-                if i%2 == 0:
-                    self.sizeEntered[i].grid(row = lineNumber, column = 1)
-                else:
-                    self.sizeEntered[i].grid(row = lineNumber, column = 2)
-            else:
-                lineNumber += 1
-                count = 0
-                if i%2 == 0:
-                    self.sizeEntered[i].grid(row = lineNumber, column = 1)
-                else:
-                    self.sizeEntered[i].grid(row = lineNumber, column = 2)
+        self.sizeEntered = [None] * (self.numberEntered)
+        for even in range(0, self.numberEntered, 2):
+            self.sizeEntered[even] = Entry(self)
+            self.sizeEntered[even].grid(row = (even/2)+1,column = 1)
+        for odd in range(1, self.numberEntered, 2):
+            self.sizeEntered[odd] = Entry(self)
+            self.sizeEntered[odd].grid(row = (odd/2)+1, column = 2)
         self.submit = Button(self, text = "Calculate", command = self.answer)
         self.submit.grid()
     
@@ -60,14 +49,13 @@ class Application (Frame):
         for j in range(0, self.numberEntered):
             if self.sizeReceived[j] < self.numberDesired:
                 self.invalid = True
-        
         if not self.invalid:
             # Finds the probability
             self.probability = "42" 
             self.answerBox = Label(self, text = "The probability of a "+ str(self.numberDesired.get()) + " is " + self.probability) 
         else:
             self.answerBox = Label(self, text = "The size entry is invalid")
-        self.answerBox.grid(row = 5, column = 1)
+        self.answerBox.grid(row = (self.numberEntered/2)+2, column = 1)
         
 # This can be used later on to get a random number within a set...
 def randomGenerator(size):
